@@ -1,6 +1,6 @@
 # flutter_shop
 
-A new Flutter project.
+A new Flutter project. 电商小项目
 
 ## Getting Started
 

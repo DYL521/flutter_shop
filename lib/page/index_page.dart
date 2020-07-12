@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart'; // cupertino 风格
 import 'package:flutter/material.dart';
 import 'package:flutter_shop/page/cart_page.dart';
 import 'package:flutter_shop/page/category_page.dart';
-import 'package:flutter_shop/page/home_page.dart';
+import 'package:flutter_shop/page/home_page.dart3';
 import 'package:flutter_shop/page/member_page.dart';
 
 class IndexPage extends StatefulWidget {

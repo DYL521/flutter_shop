@@ -41,21 +41,27 @@ class _IndexPageState extends State<IndexPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color.fromRGBO(244, 245, 245, 1.0),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed, //fixed  、shifting类型
-        currentIndex: currentIndex, // 索引
-        items: bottomTabs,
-        onTap: (index) {
-          setState(() {
-            currentIndex = index;
-            currentPage = tabbodies[index]; // 找到真实的页面
-          });
-        },
-      ),
+    return  Container(
+      child:
+      Scaffold(
+        backgroundColor: Color.fromRGBO(244, 245, 245, 1.0),
+        bottomNavigationBar: BottomNavigationBar(
 
-      body: currentPage, // 当前页面的显示
+          type: BottomNavigationBarType.fixed, //fixed  、shifting类型
+          currentIndex: currentIndex, // 索引
+          items: bottomTabs,
+          onTap: (index) {
+            setState(() {
+              currentIndex = index;
+              currentPage = tabbodies[index]; // 找到真实的页面
+            });
+          },
+        ),
+
+        body: currentPage, // 当前页面的显示
+      )
+
     );
+
   }
 }

@@ -1,0 +1,83 @@
+import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+
+// https://www.jspang.com/detailed?id=53
+
+// easyMock
+
+class HomePage extends StatelessWidget {
+  TextEditingController typeController = TextEditingController();
+  String showText = "欢迎来到高级会所";
+
+  @override
+  Widget build(BuildContext context) {
+
+    postHttp("呆小症");
+    return Container(
+      child: Scaffold(
+          appBar: AppBar(
+            title: Text("美好人间"),
+          ),
+          body: SingleChildScrollView(
+            child: Container(
+              child: Column(
+                // 列布局
+                children: <Widget>[
+                  TextField(
+                    controller: typeController,
+                    decoration: InputDecoration(
+                        contentPadding: EdgeInsets.all(10.0),
+                        labelText: "美女类型",
+                        helperText: "请输入你喜欢的类型"),
+                    autofocus: false, // 关闭调键盘
+                  ),
+                  RaisedButton(
+                    onPressed: () {},
+                    child: Text("选择完毕"),
+                  ),
+                  Text(
+                    showText,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                ],
+              ),
+            ),
+          )), // 解决元素越界
+    );
+  }
+
+  // get
+  Future getHttp(String TypeText) async {
+    try {
+      Response response;
+
+      var data = {"name": TypeText};
+      response = await Dio().get(
+          "https://www.easy-mock.com/mock/5c60131a4bed3a6342711498/baixing/dabaojian",
+          queryParameters: data);
+
+      return print(response.data);
+    } catch (e) {
+      return print(e);
+    }
+  }
+
+  // post
+  Future postHttp(String TypeText) async {
+    try {
+      Response response;
+
+      var data = {"name": TypeText};
+      response = await Dio().post(
+          "https://www.easy-mock.com/mock/5f0b15bb3d75a643f8c85532/shop/dabaojian",
+          queryParameters: data);
+      return print(response.data);
+    } catch (e) {
+      return print(e);
+    }
+  }
+  // https://time.geekbang.org/?utm_source=pinpaizhuanqu&utm_medium=geektime&utm_campaign=guanwang&utm_term=guanwang&utm_content=0511
+
+
+}

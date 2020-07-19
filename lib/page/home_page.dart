@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_shop/service/service_method.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -43,13 +44,24 @@ class _HomePageState extends State<HomePage> {
             List<Map> swiperDataList =
                 (data['data']['slides'] as List).cast(); // 解析成List
 
+            // 位置
             List<Map> navgatorList =
                 (data['data']['category'] as List).cast(); // 解析成List
+
+            // 广告
+            String adPicture =
+                data['data']["advertesPicture"]['PiCTURE_ADDRESS'];
+
+            // 拨打店长电话
+            String leadImage = data['data']["shopinfo"]['leadImage'];
+            String leadPhone = data['data']["shopinfo"]['leadPhone'];
 
             return Column(
               children: <Widget>[
                 WpiperDiy(swiperDataList),
                 TopNavigator(navgatorList),
+                AdBanner(adPicture),
+                LeaderPhone(leadImage, leadPhone),
               ],
             );
           } else {
@@ -127,7 +139,7 @@ class TopNavigator extends StatelessWidget {
     // 删除后台数据给我们的多余的数据，不需要
     if (this.navigigatorList.length > 10) {
 //      this.navigigatorList.removeLast();
-    this.navigigatorList.removeRange(10, this.navigigatorList.length);
+      this.navigigatorList.removeRange(10, this.navigigatorList.length);
     }
 
     return Container(
@@ -147,7 +159,46 @@ class TopNavigator extends StatelessWidget {
 /**
  *  1、轮播组件        https://github.com/best-flutter/flutter_swiper/blob/master/README-ZH.md
  *  2、屏幕各种尺寸适配 https://github.com/OpenFlutter/flutter_screenutil
- *
- *
- *
+ *  3、拨打店长电话    github地址：https://github.com/flutter/plugins/tree/master/packages/url_launcher
  */
+
+// 广告位置
+class AdBanner extends StatelessWidget {
+  final String adPicture;
+
+  AdBanner(this.adPicture);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Image.network(adPicture),
+    );
+  }
+}
+
+// 拨打店长电话模块
+class LeaderPhone extends StatelessWidget {
+  final String leaderImage; //店长头像
+  final String leaderPhone; // 店长电话
+
+  LeaderPhone(this.leaderImage, this.leaderPhone);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: InkWell(
+        onTap: _laucherURL, // 单击事件
+        child: Image.network(leaderImage),
+      ),
+    );
+  }
+
+  void _laucherURL() async {
+    String url = "tel:" + leaderPhone;
+    if (await canLaunch(url)) {
+      // 异步方法
+      await launch(url);
+    } else {}
+    throw ("不能进行拨打电话～～");
+  }
+}

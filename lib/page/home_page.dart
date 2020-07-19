@@ -14,12 +14,25 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+
+/**
+ *  为了保持页面的状态， 就是从另外一个tab 跳转回来的时候，不必再加载数据， 使用混入 AutomaticKeepAliveClientMixin
+ */
+class _HomePageState extends State<HomePage>  with AutomaticKeepAliveClientMixin{
   String homePageContent = "正在获取数据";
+
+
+  @override
+  // TODO: implement wantKeepAlive 保持页面状态
+  bool get wantKeepAlive => true;
+
+
 
   @override
   void initState() {
     // TODO: implement initState
+    print("从新获取数据～～～");
+
     // 获取主页数据
     getHomePageContent().then((val) {
       setState(() {
@@ -81,6 +94,8 @@ class _HomePageState extends State<HomePage> {
       ), // 异步请求动态
     );
   }
+
+
 }
 
 // 首页轮播组件
@@ -245,7 +260,7 @@ class Recommend extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           border: Border(
-            left: BorderSide(width: 0.5, color: Colors.black12),
+            left: BorderSide(width: 1, color: Colors.black12), // width不能是小数
           ),
         ),
         child: Column(

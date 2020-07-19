@@ -22,7 +22,7 @@ class _IndexPageState extends State<IndexPage> {
         icon: Icon(CupertinoIcons.profile_circled), title: Text("会员中心")),
   ];
 
-  final List tabbodies = [
+  final List<Widget> tabbodies = [
     HomePage(),
     CategoryPage(),
     CartPage(),
@@ -42,31 +42,28 @@ class _IndexPageState extends State<IndexPage> {
 
   @override
   Widget build(BuildContext context) {
-
     //初始化的是一般放在全局的位置
     ScreenUtil.instance = ScreenUtil(width: 750, height: 1334)
       ..init(context); //iphone6 像素值
-    return  Container(
-      child:
-      Scaffold(
-        backgroundColor: Color.fromRGBO(244, 245, 245, 1.0),
-        bottomNavigationBar: BottomNavigationBar(
+    return Container(
+        child: Scaffold(
+      backgroundColor: Color.fromRGBO(244, 245, 245, 1.0),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed, //fixed  、shifting类型
+        currentIndex: currentIndex, // 索引
+        items: bottomTabs,
+        onTap: (index) {
+          setState(() {
+            currentIndex = index;
+            currentPage = tabbodies[index]; // 找到真实的页面
+          });
+        },
+      ),
 
-          type: BottomNavigationBarType.fixed, //fixed  、shifting类型
-          currentIndex: currentIndex, // 索引
-          items: bottomTabs,
-          onTap: (index) {
-            setState(() {
-              currentIndex = index;
-              currentPage = tabbodies[index]; // 找到真实的页面
-            });
-          },
-        ),
-
-        body: currentPage, // 当前页面的显示
-      )
-
-    );
-
+      body: IndexedStack(
+          index: currentIndex, // IndexedStack 页面状态
+          children: tabbodies),
+//        currentPage, // 当前页面的显示
+    ));
   }
 }

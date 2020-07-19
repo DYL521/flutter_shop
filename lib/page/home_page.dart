@@ -1,7 +1,10 @@
 import 'dart:convert';
+import 'dart:html';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_shop/service/service_method.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
@@ -39,12 +42,18 @@ class _HomePageState extends State<HomePage> {
             var data = json.decode(snapshot.data.toString());
             List<Map> swiperDataList =
                 (data['data']['slides'] as List).cast(); // 解析成List
+
+            List<Map> navgatorList =
+                (data['data']['category'] as List).cast(); // 解析成List
+
             return Column(
               children: <Widget>[
                 WpiperDiy(swiperDataList),
+                TopNavigator(navgatorList),
               ],
             );
-          } else { //没有数据
+          } else {
+            //没有数据
             return Center(
               child: Text("加载中..."),
             );
@@ -64,11 +73,23 @@ class WpiperDiy extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 旧版本的， 写完之后再更新新版本 - 一般放全局
+//    ScreenUtil.instance = ScreenUtil(width: 750, height: 1334)
+//      ..init(context); //iphone6 像素值
+
+    // 输出屏幕像素密度
+    print("设备的像素密度：${ScreenUtil.pixelRatio}");
+    print("设备的宽：${ScreenUtil.screenWidth}");
+    print("设备的高：${ScreenUtil.screenHeight}");
     return Container(
-      height: 333,
+      height: ScreenUtil().scaleHeight(333),
+      width: ScreenUtil().scaleWidth(750),
       child: Swiper(
         itemBuilder: (BuildContext context, int index) {
-          return Image.network("${swiperDateList[index]['image']}",fit: BoxFit.fill,);
+          return Image.network(
+            "${swiperDateList[index]['image']}",
+            fit: BoxFit.fill,
+          );
         },
         itemCount: swiperDateList.length,
         pagination: new SwiperPagination(),
@@ -77,3 +98,56 @@ class WpiperDiy extends StatelessWidget {
     );
   }
 }
+
+// 导航GridView
+class TopNavigator extends StatelessWidget {
+  final List navigigatorList;
+
+  TopNavigator(this.navigigatorList);
+
+  Widget _gridViewItemUI(BuildContext context, item) {
+    return InkWell(
+      onTap: () {
+        print("点击来导航～～～");
+      },
+      child: Column(
+        children: [
+          Image.network(
+            item["image"],
+            width: ScreenUtil().setWidth(90),
+          ),
+          Text(item["mallCategoryName"]),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // 删除后台数据给我们的多余的数据，不需要
+    if (this.navigigatorList.length > 10) {
+//      this.navigigatorList.removeLast();
+    this.navigigatorList.removeRange(10, this.navigigatorList.length);
+    }
+
+    return Container(
+      height: ScreenUtil().setHeight(320),
+      padding: EdgeInsets.all(3.0),
+      child: GridView.count(
+        crossAxisCount: 5, // 一行5个
+        padding: EdgeInsets.all(5.0),
+        children: navigigatorList.map((item) {
+          return _gridViewItemUI(context, item);
+        }).toList(),
+      ),
+    );
+  }
+}
+
+/**
+ *  1、轮播组件        https://github.com/best-flutter/flutter_swiper/blob/master/README-ZH.md
+ *  2、屏幕各种尺寸适配 https://github.com/OpenFlutter/flutter_screenutil
+ *
+ *
+ *
+ */

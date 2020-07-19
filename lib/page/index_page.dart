@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart'; // cupertino 风格
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_shop/page/cart_page.dart';
 import 'package:flutter_shop/page/category_page.dart';
 import 'package:flutter_shop/page/home_page.dart3';
@@ -41,6 +42,10 @@ class _IndexPageState extends State<IndexPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    //初始化的是一般放在全局的位置
+    ScreenUtil.instance = ScreenUtil(width: 750, height: 1334)
+      ..init(context); //iphone6 像素值
     return  Container(
       child:
       Scaffold(

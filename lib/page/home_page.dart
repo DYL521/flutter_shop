@@ -393,3 +393,26 @@ class FloorContent extends StatelessWidget {
     );
   }
 }
+
+
+//火爆商品数据
+class HotGoods extends StatefulWidget {
+  @override
+  _HotGoodsState createState() => _HotGoodsState();
+}
+
+class _HotGoodsState extends State<HotGoods> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // 获得火爆专区数据
+    getHomePageBeloContent().then((value) => print(value));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Text("11111");
+  }
+}

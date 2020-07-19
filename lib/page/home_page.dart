@@ -56,13 +56,20 @@ class _HomePageState extends State<HomePage> {
             String leadImage = data['data']["shopinfo"]['leadImage'];
             String leadPhone = data['data']["shopinfo"]['leadPhone'];
 
-            return Column(
-              children: <Widget>[
-                WpiperDiy(swiperDataList),
-                TopNavigator(navgatorList),
-                AdBanner(adPicture),
-                LeaderPhone(leadImage, leadPhone),
-              ],
+            //
+            List<Map> recommonendList =
+                (data['data']["recommonend"] as List).cast();
+
+            return SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  WpiperDiy(swiperDataList),
+                  TopNavigator(navgatorList),
+                  AdBanner(adPicture),
+                  LeaderPhone(leadImage, leadPhone),
+                  Recommend(recommonendList),
+                ],
+              ),
             );
           } else {
             //没有数据
@@ -200,5 +207,85 @@ class LeaderPhone extends StatelessWidget {
       await launch(url);
     } else {}
     throw ("不能进行拨打电话～～");
+  }
+}
+
+// 商品推荐
+class Recommend extends StatelessWidget {
+  final List recommondLit;
+
+  Recommend(this.recommondLit);
+
+  // 标题头部
+  Widget _titleWidget() {
+    return Container(
+      alignment: Alignment.centerLeft, // 靠左的中间位置
+      padding: EdgeInsets.fromLTRB(10, 2, 0, 5.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(bottom: BorderSide(width: 0.5, color: Colors.black12)),
+      ),
+
+      child: Text(
+        "商品推荐",
+        style: TextStyle(color: Colors.pink),
+      ),
+    );
+  }
+
+  // 具体的商品
+  Widget _item(index) {
+    return InkWell(
+      onTap: () {},
+      child: Container(
+        height: ScreenUtil().setHeight(330),
+        width: ScreenUtil().setWidth(250),
+        padding: EdgeInsets.all(8.0),
+        //内边距
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(
+            left: BorderSide(width: 0.5, color: Colors.black12),
+          ),
+        ),
+        child: Column(
+          children: <Widget>[
+            Image.network(recommondLit[index]['image']),
+            Text("${recommondLit[index]["mallPrice"]}"),
+            Text(
+              "${recommondLit[index]["price"]}",
+              style: TextStyle(
+                  decoration: TextDecoration.lineThrough, color: Colors.grey),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // 横向列方法
+  Widget _recommedList() {
+    return Container(
+      height: ScreenUtil().setHeight(330),
+      margin: EdgeInsets.only(top: 10.0), //上边距
+      child: ListView.builder(
+        itemBuilder: (context, index) {
+          return _item(index);
+        },
+        scrollDirection: Axis.horizontal,
+        itemCount: recommondLit.length,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: ScreenUtil().setHeight(380), // 总高度
+      margin: EdgeInsets.only(top: 10),
+      child: Column(
+        children: [_titleWidget(), _recommedList()],
+      ),
+    );
   }
 }

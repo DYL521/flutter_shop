@@ -19,6 +19,10 @@ class HomePage extends StatefulWidget {
  */
 class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
+  // 下啦加载
+  int page = 1;
+  List<Map> hotGoodsList = [];
+
   String homePageContent = "正在获取数据";
 
   @override
@@ -31,11 +35,15 @@ class _HomePageState extends State<HomePage>
     print("从新获取数据～～～");
 
     // 获取主页数据
-    getHomePageContent().then((val) {
-      setState(() {
-        homePageContent = val.toString();
-      });
-    });
+//    var formData = {'lon': '115.02932', "lat": '35.76189'};
+//    request("homePageContent", formData: formData).then((val) {
+//      setState(() {
+//        homePageContent = val.toString();
+//      });
+//    });
+
+    _getHotGoods();
+
     super.initState();
   }
 
@@ -97,6 +105,11 @@ class _HomePageState extends State<HomePage>
 
                   FloorTitle(floor3Title),
                   FloorContent(floor3),
+
+                  // 火爆专区数据
+//                  HotGoods(),
+                  // 火爆数据封装
+                  _hotGoods(),
                 ],
               ),
             );
@@ -108,6 +121,91 @@ class _HomePageState extends State<HomePage>
           }
         },
       ), // 异步请求动态
+    );
+  }
+
+  // 获得火爆专区数据
+  void _getHotGoods() {
+    var formData = {"page": page};
+    request("homePageBelowContent", formData: formData).then((value) {
+      var data = json.decode(value.toString());
+
+      List<Map> newGoodsList = (data['data'] as List).cast();
+      // 改变状态
+      setState(() {
+        hotGoodsList.addAll(newGoodsList);
+        page++;
+      });
+    });
+  }
+
+  // 火爆专区标题封装
+  Widget hotTitle = Container(
+    margin: EdgeInsets.only(top: 10),
+    alignment: Alignment.center,
+    color: Colors.transparent,
+    child: Text("火爆专区"),
+  );
+
+  // 火爆专区 - 拼装数组类型的Widget
+  Widget _wrapList() {
+    if (hotGoodsList.length != 0) {
+      // 有数据
+      List<Widget> listWidget = hotGoodsList.map((val) {
+        return InkWell(
+          onTap: () {},
+          child: Container(
+            width: ScreenUtil().setHeight(372),
+            color: Colors.white,
+            padding: EdgeInsets.all(5.0),
+            margin: EdgeInsets.only(bottom: 3.0),
+            child: Column(
+              children: <Widget>[
+                Image.network(
+                  val['image'],
+                  width: ScreenUtil().setWidth(370),
+                ),
+                Text(
+                  val['name'],
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      color: Colors.pink, fontSize: ScreenUtil().setSp(26)),
+                ),
+                Row(
+                  children: <Widget>[
+                    Text("钱${val['mallPrice']}"),
+                    Text(
+                      "钱${val["price"]}",
+                      style: TextStyle(
+                          color: Colors.black26,
+                          decoration: TextDecoration.lineThrough),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      }).toList();
+      return Wrap(
+        spacing: 3,
+        children: listWidget,
+      );
+    } else {
+      return Text("未查询到数据");
+    }
+  }
+
+  // 火爆专区 标题和内容组装成一个完整的组件
+  Widget _hotGoods() {
+    return Container(
+      child: Column(
+        children: [
+          hotTitle,
+          _wrapList(),
+        ],
+      ),
     );
   }
 }
@@ -394,25 +492,24 @@ class FloorContent extends StatelessWidget {
   }
 }
 
-
-//火爆商品数据
-class HotGoods extends StatefulWidget {
-  @override
-  _HotGoodsState createState() => _HotGoodsState();
-}
-
-class _HotGoodsState extends State<HotGoods> {
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    // 获得火爆专区数据
-    getHomePageBeloContent().then((value) => print(value));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Text("11111");
-  }
-}
+////火爆商品数据 //更换成动态组件ß
+//class HotGoods extends StatefulWidget {
+//  @override
+//  _HotGoodsState createState() => _HotGoodsState();
+//}
+//
+//class _HotGoodsState extends State<HotGoods> {
+//
+//  @override
+//  void initState() {
+//    // TODO: implement initState
+//    super.initState();
+//    // 获得火爆专区数据
+//    request("homePageBelowContent", formData: 1).then((value) => print(value));
+//  }
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    return Text("11111");
+//  }
+//}

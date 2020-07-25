@@ -24,6 +24,9 @@ class _HomePageState extends State<HomePage>
   int page = 1;
   List<Map> hotGoodsList = [];
 
+  GlobalKey<RefreshFooterState> _footerkey =
+      new GlobalKey<RefreshFooterState>();
+
   String homePageContent = "正在获取数据";
 
   @override
@@ -90,6 +93,16 @@ class _HomePageState extends State<HomePage>
 
             //EasyRefresh 上蜡效果
             return EasyRefresh(
+              refreshFooter: ClassicsFooter(
+                key: _footerkey,
+                bgColor: Colors.white,
+                textColor: Colors.pink,
+                moreInfoColor: Colors.pink,
+                showMore: true,
+                noMoreText: "123",
+                moreInfo: "加载中...",
+                loadReadyText: "上拉加载",
+              ),
               child: ListView(
                 children: <Widget>[
                   WpiperDiy(swiperDataList),

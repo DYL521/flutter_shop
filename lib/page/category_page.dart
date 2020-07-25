@@ -103,13 +103,19 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
 
 // 右侧导航栏
 class RightCategroyNav extends StatelessWidget {
-  List list = ["名酒", "宝丰", "北京二锅头"];
+  List list = ["名酒", "宝丰", "北京二锅头","茅台"];
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: ScreenUtil().setHeight(80),
       width: ScreenUtil().setWidth(570),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(
+          bottom: BorderSide(width: 1,color: Colors.black12)
+        )
+      ),
       child: ListView.builder(
         itemCount: list.length,
         itemBuilder: (context, index) {

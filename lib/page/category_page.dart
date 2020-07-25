@@ -22,6 +22,12 @@ class _CategoryPageState extends State<CategoryPage> {
         child: Row(
           children: <Widget>[
             LeftCategoryNav(),
+            Column(
+              children: <Widget>[
+                RightCategroyNav(),
+
+              ],
+            ),
           ],
         ),
       ),
@@ -71,8 +77,10 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
             border: Border(
               bottom: BorderSide(width: 1, color: Colors.black12),
             )),
-        child: Text(list[index].mallCategoryName,
-        style: TextStyle(fontSize: ScreenUtil().setSp(28)),),
+        child: Text(
+          list[index].mallCategoryName,
+          style: TextStyle(fontSize: ScreenUtil().setSp(28)),
+        ),
       ),
     );
   }
@@ -90,5 +98,39 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
         list = category.data;
       });
     });
+  }
+}
+
+// 右侧导航栏
+class RightCategroyNav extends StatelessWidget {
+  List list = ["名酒", "宝丰", "北京二锅头"];
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: ScreenUtil().setHeight(80),
+      width: ScreenUtil().setWidth(570),
+      child: ListView.builder(
+        itemCount: list.length,
+        itemBuilder: (context, index) {
+          return _rightInWell(list[index]);
+        },
+        scrollDirection: Axis.horizontal,
+      ),
+    );
+  }
+
+  // 单个wight
+  Widget _rightInWell(String item) {
+    return InkWell(
+      onTap: () {},
+      child: Container(
+        padding: EdgeInsets.fromLTRB(5.0, 10, 5.0, 10),
+        child: Text(
+          item,
+          style: TextStyle(fontSize: ScreenUtil().setSp(28)),
+        ),
+      ),
+    );
   }
 }

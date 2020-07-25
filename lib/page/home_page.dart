@@ -4,6 +4,7 @@ import 'dart:html';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_shop/service/service_method.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
@@ -42,7 +43,7 @@ class _HomePageState extends State<HomePage>
 //      });
 //    });
 
-    _getHotGoods();
+//    _getHotGoods();
 
     super.initState();
   }
@@ -87,8 +88,9 @@ class _HomePageState extends State<HomePage>
             List<Map> floor2 = (data['data']['floor2'] as List).cast();
             List<Map> floor3 = (data['data']['floor3'] as List).cast();
 
-            return SingleChildScrollView(
-              child: Column(
+            //EasyRefresh 上蜡效果
+            return EasyRefresh(
+              child: ListView(
                 children: <Widget>[
                   WpiperDiy(swiperDataList),
                   TopNavigator(navgatorList),
@@ -112,6 +114,22 @@ class _HomePageState extends State<HomePage>
                   _hotGoods(),
                 ],
               ),
+              loadMore: () async {
+                print("开始加载更多....");
+                var formData = {"page": page};
+                // 异步效果
+                await request("homePageBelowContent", formData: formData)
+                    .then((value) {
+                  var data = json.decode(value.toString());
+
+                  List<Map> newGoodsList = (data['data'] as List).cast();
+                  // 改变状态
+                  setState(() {
+                    hotGoodsList.addAll(newGoodsList);
+                    page++;
+                  });
+                });
+              },
             );
           } else {
             //没有数据
@@ -124,20 +142,20 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  // 获得火爆专区数据
-  void _getHotGoods() {
-    var formData = {"page": page};
-    request("homePageBelowContent", formData: formData).then((value) {
-      var data = json.decode(value.toString());
-
-      List<Map> newGoodsList = (data['data'] as List).cast();
-      // 改变状态
-      setState(() {
-        hotGoodsList.addAll(newGoodsList);
-        page++;
-      });
-    });
-  }
+//  // 获得火爆专区数据
+//  void _getHotGoods() {
+//    var formData = {"page": page};
+//    request("homePageBelowContent", formData: formData).then((value) {
+//      var data = json.decode(value.toString());
+//
+//      List<Map> newGoodsList = (data['data'] as List).cast();
+//      // 改变状态
+//      setState(() {
+//        hotGoodsList.addAll(newGoodsList);
+//        page++;
+//      });
+//    });
+//  }
 
   // 火爆专区标题封装
   Widget hotTitle = Container(
@@ -189,6 +207,7 @@ class _HomePageState extends State<HomePage>
         );
       }).toList();
       return Wrap(
+        // Wrap 流式布局
         spacing: 3,
         children: listWidget,
       );

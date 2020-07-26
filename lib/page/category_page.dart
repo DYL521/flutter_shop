@@ -4,6 +4,7 @@ import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_shop/model/category.dart';
+import 'package:flutter_shop/model/categoryGoodsList.dart';
 import 'package:flutter_shop/provider/child_category.dart';
 import 'package:flutter_shop/service/service_method.dart';
 import 'package:provide/provide.dart';
@@ -90,8 +91,9 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
         height: ScreenUtil().setHeight(100),
         padding: EdgeInsets.only(left: 10, top: 20),
         decoration: BoxDecoration(
-          //点击效果
-            color: isClick ? Color.fromRGBO(236, 236, 236, 1.0) : Colors.white, //  isClick  被点击，显示颜色深的否则默认白色
+            //点击效果
+            color: isClick ? Color.fromRGBO(236, 236, 236, 1.0) : Colors.white,
+            //  isClick  被点击，显示颜色深的否则默认白色
             border: Border(
               bottom: BorderSide(width: 1, color: Colors.black12),
             )),
@@ -112,8 +114,8 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
         list = category.data;
       });
       // 拿到数据之后，直接传递第一个数据给界面 - 默认显示
-      Provide.value<ChildCategory>(context).getChildCategory(list[0].bxMallSubDto);
-      
+      Provide.value<ChildCategory>(context)
+          .getChildCategory(list[0].bxMallSubDto);
     });
   }
 }
@@ -171,21 +173,20 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
   Widget build(BuildContext context) {
     return Container(
       child: Text("商品列表"),
-
     );
   }
 
-  void _getGZoodsList()async{
-    var data = {
-      "categoryId":"4",
-      "CategorySubId":"",
-      "page":1
-    };
+  void _getGZoodsList() async {
+    var data = {"categoryId": "4", "CategorySubId": "", "page": 1};
+
 
     await request("getMallGoods",formData: data).then((value){
       var data = json.decode(value.toString());
       print("分类商品列表： >>>> ${data}");
+      // 直接转换成对象
+      CategoryGoodsListModel goodsList = CategoryGoodsListModel.fromJson(data);
+
+
     });
   }
 }
-

@@ -1,3 +1,5 @@
+
+// 商品分类
 class CategoryGoodsListModel {
   String code;
   String message;
@@ -5,6 +7,7 @@ class CategoryGoodsListModel {
 
   CategoryGoodsListModel({this.code, this.message, this.data});
 
+  // json
   CategoryGoodsListModel.fromJson(Map<String, dynamic> json) {
     code = json['code'];
     message = json['message'];

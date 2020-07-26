@@ -88,7 +88,8 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
         height: ScreenUtil().setHeight(100),
         padding: EdgeInsets.only(left: 10, top: 20),
         decoration: BoxDecoration(
-            color: isClick ? Colors.black26 : Colors.white, //  isClick  被点击，显示颜色深的否则默认白色
+          //点击效果
+            color: isClick ? Color.fromRGBO(236, 236, 236, 1.0) : Colors.white, //  isClick  被点击，显示颜色深的否则默认白色
             border: Border(
               bottom: BorderSide(width: 1, color: Colors.black12),
             )),
@@ -105,13 +106,12 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
     await request("getCategory").then((value) {
       var data = json.decode(value.toString());
       CategoryModel category = CategoryModel.fromJson(data);
-
-//      list.data.forEach((element) {
-////        print("element");
-////      });
       setState(() {
         list = category.data;
       });
+      // 拿到数据之后，直接传递第一个数据给界面 - 默认显示
+      Provide.value<ChildCategory>(context).getChildCategory(list[0].bxMallSubDto);
+      
     });
   }
 }

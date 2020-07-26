@@ -6,8 +6,11 @@ import '../model/category.dart';
 
 class ChildCategory with ChangeNotifier {
   List<BxMallSubDto> childCategoryList = [];
+  int childIndex = 0; // 子类高亮的索引
 
   getChildCategory(List<BxMallSubDto> list) {
+    // 每次点击大类，索引都要归零,到全部的位置
+    childIndex = 0;
 
     // 添加全部 - all
     BxMallSubDto all = BxMallSubDto();
@@ -21,6 +24,9 @@ class ChildCategory with ChangeNotifier {
     notifyListeners(); // 监听
   }
 
-
-
+  // 改变子类索引
+  changeChildIndex(index) {
+    childIndex = index;
+    notifyListeners();
+  }
 }

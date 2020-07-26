@@ -152,7 +152,7 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
   }
 }
 
-// 右侧导航栏
+// 小右侧导航栏
 class RightCategroyNav extends StatelessWidget {
 //  List list = ["名酒", "宝丰", "北京二锅头","茅台"];
 
@@ -170,7 +170,8 @@ class RightCategroyNav extends StatelessWidget {
           child: ListView.builder(
             itemCount: childCategory.childCategoryList.length,
             itemBuilder: (context, index) {
-              return _rightInWell(childCategory.childCategoryList[index]);
+              return _rightInWell(
+                  index, childCategory.childCategoryList[index]);
             },
             scrollDirection: Axis.horizontal,
           ),
@@ -180,14 +181,23 @@ class RightCategroyNav extends StatelessWidget {
   }
 
   // 单个wight
-  Widget _rightInWell(BxMallSubDto item) {
+  Widget _rightInWell(int index, BxMallSubDto item) {
+    bool isClick = false;
+    //# TODO： context 为啥不存在？ 以后再看为啥
+    isClick = (isClick == Provide.value<ChildCategory>(context).childIndex)
+        ? true
+        : false;
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Provide.value<ChildCategory>(context).changeChildIndex(index);
+      },
       child: Container(
         padding: EdgeInsets.fromLTRB(5.0, 10, 5.0, 10),
         child: Text(
           item.mallSubName,
-          style: TextStyle(fontSize: ScreenUtil().setSp(28)),
+          style: TextStyle(
+              fontSize: ScreenUtil().setSp(28),
+              color: isClick ? Colors.pink : Colors.white),
         ),
       ),
     );
@@ -214,15 +224,16 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
     return Provide<CategoryGoodslistProvide>(
       builder: (context, child, data) {
         // data 是状态管理的数据
-        return Container(
-          width: ScreenUtil().setWidth(570),
-          height: ScreenUtil().setHeight(1000),
-          child: ListView.builder(
-              itemCount: data.goodsList.length,
-              itemBuilder: (context, index) {
-                return _ListWidget(data.goodsList, index);
-              }),
-        );
+        return Expanded(
+          child: Container(
+            width: ScreenUtil().setWidth(570),
+            child: ListView.builder(
+                itemCount: data.goodsList.length,
+                itemBuilder: (context, index) {
+                  return _ListWidget(data.goodsList, index);
+                }),
+          ),
+        ); //Flexible 伸缩组件
       },
     );
   }

@@ -219,9 +219,14 @@ class RightCategroyNav extends StatelessWidget {
       // 直接转换成对象
       CategoryGoodsListModel goodsList = CategoryGoodsListModel.fromJson(data);
 
-      // 状态管理的形式处理数据
-      Provide.value<CategoryGoodslistProvide>(context)
-          .getGoodsList(goodsList.data);
+      if (goodsList.data == null) {
+        // 状态管理的形式处理数据
+        Provide.value<CategoryGoodslistProvide>(context)
+            .getGoodsList([]); // 传空列表给用户
+      } else {
+        Provide.value<CategoryGoodslistProvide>(context)
+            .getGoodsList(goodsList.data);
+      }
     });
   }
 }
@@ -245,17 +250,21 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
   Widget build(BuildContext context) {
     return Provide<CategoryGoodslistProvide>(
       builder: (context, child, data) {
-        // data 是状态管理的数据
-        return Expanded(
-          child: Container(
-            width: ScreenUtil().setWidth(570),
-            child: ListView.builder(
-                itemCount: data.goodsList.length,
-                itemBuilder: (context, index) {
-                  return _ListWidget(data.goodsList, index);
-                }),
-          ),
-        ); //Flexible 伸缩组件
+        if (data.goodsList.length > 0) {
+          // data 是状态管理的数据
+          return Expanded(
+            child: Container(
+              width: ScreenUtil().setWidth(570),
+              child: ListView.builder(
+                  itemCount: data.goodsList.length,
+                  itemBuilder: (context, index) {
+                    return _ListWidget(data.goodsList, index);
+                  }),
+            ),
+          ); //Flexible 伸缩组件
+        } else {
+          return Text("暂时为获取到数据");
+        }
       },
     );
   }

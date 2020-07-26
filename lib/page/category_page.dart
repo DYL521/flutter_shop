@@ -47,7 +47,6 @@ class LeftCategoryNav extends StatefulWidget {
 }
 
 class _LeftCategoryNavState extends State<LeftCategoryNav> {
-
   List list = [];
   var listIndex = 0;
 
@@ -55,13 +54,14 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
     __getCategory();
+    _getGoodsList();
   }
 
   @override
   Widget build(BuildContext context) {
-    return
-      Container(
+    return Container(
         width: ScreenUtil().setWidth(180),
         decoration: BoxDecoration(
             border: Border(right: BorderSide(width: 1, color: Colors.black12))),
@@ -89,6 +89,11 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
 
         // 改变子类状态 -> 传入子类
         Provide.value<ChildCategory>(context).getChildCategory(childList);
+
+        //点击大类,的id
+        var categoryId = list[index].mallCategoryId;
+        // 根据ID请求数据
+        _getGoodsList(categroyId: categoryId);
       },
       child: Container(
         height: ScreenUtil().setHeight(100),
@@ -196,7 +201,7 @@ class CategoryGoodsList extends StatefulWidget {
 }
 
 class _CategoryGoodsListState extends State<CategoryGoodsList> {
-  List list = [];
+//  List list = [];
 
   @override
   void initState() {
@@ -206,28 +211,33 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: ScreenUtil().setWidth(570),
-      height: ScreenUtil().setHeight(1000),
-      child: ListView.builder(
-          itemCount: list.length,
-          itemBuilder: (context, index) {
-            return _ListWidget(index);
-          }),
+    return Provide<CategoryGoodslistProvide>(
+      builder: (context, child, data) {
+        // data 是状态管理的数据
+        return Container(
+          width: ScreenUtil().setWidth(570),
+          height: ScreenUtil().setHeight(1000),
+          child: ListView.builder(
+              itemCount: data.goodsList.length,
+              itemBuilder: (context, index) {
+                return _ListWidget(data.goodsList, index);
+              }),
+        );
+      },
     );
   }
 
-  Widget _goodImage(index) {
+  Widget _goodImage(List newList, int index) {
     return Container(
       width: ScreenUtil().setWidth(200),
-      child: Image.network(list[index].image),
+      child: Image.network(newList[index].image),
     );
   }
 
-  Widget _goodsName(index) {
+  Widget _goodsName(List newList, index) {
     return Container(
       child: Text(
-        list[index].goodsName,
+        newList[index].goodsName,
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
         style: TextStyle(
@@ -239,19 +249,19 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
     );
   }
 
-  Widget _goodsPrice(index) {
+  Widget _goodsPrice(List newList, index) {
     return Container(
       width: ScreenUtil().setWidth(370),
       margin: EdgeInsets.only(top: 20),
       child: Row(
         children: <Widget>[
           Text(
-            "价格：${list[index].presentPrice}",
+            "价格：${newList[index].presentPrice}",
             style:
                 TextStyle(color: Colors.pink, fontSize: ScreenUtil().setSp(30)),
           ),
           Text(
-            "价格：${list[index].oriPrice}",
+            "价格：${newList[index].oriPrice}",
             style: TextStyle(
                 color: Colors.black26,
                 fontSize: ScreenUtil().setSp(30),
@@ -263,7 +273,7 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
   }
 
   // 组装成一个Widget
-  Widget _ListWidget(int index) {
+  Widget _ListWidget(List newList, int index) {
     return InkWell(
       onTap: () {},
       child: Container(
@@ -274,11 +284,11 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
         ),
         child: Row(
           children: <Widget>[
-            _goodImage(index),
+            _goodImage(newList, index),
             Column(
               children: <Widget>[
-                _goodsName(index),
-                _goodsPrice(index),
+                _goodsName(newList, index),
+                _goodsPrice(newList, index),
               ],
             ),
           ],

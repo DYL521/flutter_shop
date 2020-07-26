@@ -87,11 +87,13 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
         // 子类信息
         var childList = list[index].bxMallSubDto; // 左侧的大类 -联动
 
-        // 改变子类状态 -> 传入子类
-        Provide.value<ChildCategory>(context).getChildCategory(childList);
-
         //点击大类,的id
         var categoryId = list[index].mallCategoryId;
+
+        // 改变子类状态 -> 传入子类
+        Provide.value<ChildCategory>(context)
+            .getChildCategory(childList, categoryId);
+
         // 根据ID请求数据
         _getGoodsList(categroyId: categoryId);
       },
@@ -123,7 +125,7 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
       });
       // 拿到数据之后，直接传递第一个数据给界面 - 默认显示
       Provide.value<ChildCategory>(context)
-          .getChildCategory(list[0].bxMallSubDto);
+          .getChildCategory(list[0].bxMallSubDto, list[0].mallCategoryId);
     });
   }
 
@@ -190,6 +192,7 @@ class RightCategroyNav extends StatelessWidget {
     return InkWell(
       onTap: () {
         Provide.value<ChildCategory>(context).changeChildIndex(index);
+        _getGoodsList(item.mallSubId);
       },
       child: Container(
         padding: EdgeInsets.fromLTRB(5.0, 10, 5.0, 10),
@@ -201,6 +204,25 @@ class RightCategroyNav extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _getGoodsList(String categroySubId) async {
+    var data = {
+      "categoryId": Provide.value<ChildCategory>(context).categoryId,
+      "CategorySubId": categroySubId,
+      "page": 1
+    };
+
+    await request("getMallGoods", formData: data).then((value) {
+      var data = json.decode(value.toString());
+      print("分类商品列表： >>>> ${data}");
+      // 直接转换成对象
+      CategoryGoodsListModel goodsList = CategoryGoodsListModel.fromJson(data);
+
+      // 状态管理的形式处理数据
+      Provide.value<CategoryGoodslistProvide>(context)
+          .getGoodsList(goodsList.data);
+    });
   }
 }
 

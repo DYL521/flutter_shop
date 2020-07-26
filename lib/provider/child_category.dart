@@ -8,9 +8,14 @@ class ChildCategory with ChangeNotifier {
   List<BxMallSubDto> childCategoryList = [];
   int childIndex = 0; // 子类高亮的索引
 
-  getChildCategory(List<BxMallSubDto> list) {
+  String categoryId = "4"; // 默认大类id 4
+
+
+  getChildCategory(List<BxMallSubDto> list, String id) {
     // 每次点击大类，索引都要归零,到全部的位置
     childIndex = 0;
+    //传递大类id
+    categoryId = id;
 
     // 添加全部 - all
     BxMallSubDto all = BxMallSubDto();

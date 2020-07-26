@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_shop/model/category.dart';
 import 'package:flutter_shop/model/categoryGoodsList.dart';
+import 'package:flutter_shop/provider/category_goods_list.dart';
 import 'package:flutter_shop/provider/child_category.dart';
 import 'package:flutter_shop/service/service_method.dart';
 import 'package:provide/provide.dart';
@@ -46,6 +47,7 @@ class LeftCategoryNav extends StatefulWidget {
 }
 
 class _LeftCategoryNavState extends State<LeftCategoryNav> {
+
   List list = [];
   var listIndex = 0;
 
@@ -58,7 +60,8 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return
+      Container(
         width: ScreenUtil().setWidth(180),
         decoration: BoxDecoration(
             border: Border(right: BorderSide(width: 1, color: Colors.black12))),
@@ -118,6 +121,30 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
           .getChildCategory(list[0].bxMallSubDto);
     });
   }
+
+  // 右侧的数据，跟左侧有联动的效果，送放在这里
+  void _getGoodsList({String categroyId}) async {
+    var data = {
+      "categoryId": categroyId == null ? "4" : categroyId,
+      "CategorySubId": "",
+      "page": 1
+    };
+
+    await request("getMallGoods", formData: data).then((value) {
+      var data = json.decode(value.toString());
+      print("分类商品列表： >>>> ${data}");
+      // 直接转换成对象
+      CategoryGoodsListModel goodsList = CategoryGoodsListModel.fromJson(data);
+
+      // 状态管理的形式处理数据
+      Provide.value<CategoryGoodslistProvide>(context)
+          .getGoodsList(goodsList.data);
+
+//      setState(() {
+//        list = goodsList.data;
+//      });
+    });
+  }
 }
 
 // 右侧导航栏
@@ -175,7 +202,6 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _getGoodsList();
   }
 
   @override
@@ -189,20 +215,6 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
             return _ListWidget(index);
           }),
     );
-  }
-
-  void _getGoodsList() async {
-    var data = {"categoryId": "4", "CategorySubId": "", "page": 1};
-
-    await request("getMallGoods", formData: data).then((value) {
-      var data = json.decode(value.toString());
-      print("分类商品列表： >>>> ${data}");
-      // 直接转换成对象
-      CategoryGoodsListModel goodsList = CategoryGoodsListModel.fromJson(data);
-      setState(() {
-        list = goodsList.data;
-      });
-    });
   }
 
   Widget _goodImage(index) {

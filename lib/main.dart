@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart'; // material 风格
 import 'package:flutter_shop/page/index_page.dart';
+import 'package:flutter_shop/provider/category_goods_list.dart';
 import 'package:flutter_shop/provider/child_category.dart';
 import 'package:flutter_shop/provider/counter.dart';
 import 'package:provide/provide.dart';
@@ -9,11 +10,15 @@ void main() {
   var counter = Counter();
   var providers = Providers();
   var childCategroy = ChildCategory();
+  var cateGoryGoodsList = CategoryGoodslistProvide();
 
-  // 状态管理
+  // 状态管理 - 放入底层 ？
   providers
     ..provide(Provider<Counter>.value(counter))
-    ..provide(Provider<ChildCategory>.value(childCategroy));
+    ..provide(Provider<ChildCategory>.value(childCategroy))
+    ..provide(Provider<CategoryGoodslistProvide>.value(cateGoryGoodsList));
+
+
   runApp(ProviderNode(child: MyApp(),providers: providers,));
 }
 

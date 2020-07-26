@@ -1,10 +1,21 @@
-import 'package:flutter/material.dart';   // material 风格
-//import 'package:flutter/cupertino.dart'; //cupertino
+import 'package:flutter/material.dart'; // material 风格
 import 'package:flutter_shop/page/index_page.dart';
+import 'package:flutter_shop/provider/child_category.dart';
+import 'package:flutter_shop/provider/counter.dart';
+import 'package:provide/provide.dart';
 
 
+void main() {
+  var counter = Counter();
+  var providers = Providers();
+  var childCategroy = ChildCategory();
 
-void  main() => runApp(MyApp());
+  // 状态管理
+  providers
+    ..provide(Provider<Counter>.value(counter))
+    ..provide(Provider<ChildCategory>.value(childCategroy));
+  runApp(ProviderNode(child: MyApp(),providers: providers,));
+}
 
 class MyApp extends StatelessWidget {
   @override

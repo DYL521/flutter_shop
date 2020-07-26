@@ -28,7 +28,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   dio: 3.0.9
   flutter_easyrefresh: ^1.2.7
-
+  provide: ^1.0.2
 
 
 
